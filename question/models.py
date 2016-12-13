@@ -7,5 +7,9 @@ class Question(models.Model):
     text = models.TextField(max_length= 1024, default = '')
     created_on = models.DateTimeField(auto_now_add = True)
     created_by = models.ForeignKey(MyUser, related_name = 'questions_created')
-    upvoted_by = models.ManyToManyField(MyUser,related_name ='questions_upvoted')
+    upvoted_by = models.ManyToManyField(MyUser,related_name ='questions_upvoted',blank='true')
+    
+    #this should return a string 
+    def __str__(self):
+        return self.title
 
