@@ -1,17 +1,9 @@
-{% load staticfiles %} 
-<!--to use %static-->
-<html>
-
-<head>
-	<link rel="stylesheet" type="text/css" href="{%static 'question/css/base.css' %}">
-</head>
-
-<body>
-    <ul>
+{% extends 'question/base.html' %} 
+{% block title %} All Questions {% endblock %}
+{% block content %} 
+<ul>
         {% for q in q_list %}
         <li>{{q.title}}</li>
         {% endfor %}
-    </ul>
-</body>
-
-</html>
+</ul>
+{% endblock %}
