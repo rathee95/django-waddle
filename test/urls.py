@@ -18,7 +18,7 @@ from django.contrib import admin
 from account import views as accountviews
 
 urlpatterns = [
-    url(r'^$',  accountviews.show_login),
+    url(r'^$',  accountviews.show_login,name = "base"),
     url(r'^account/', include('account.urls')),
     url(r'^admin/',  admin.site.urls),
     url(r'^hello/$', accountviews.hello), #$ = end
