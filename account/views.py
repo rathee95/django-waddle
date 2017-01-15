@@ -7,6 +7,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth import authenticate , logout as auth_logout, login as auth_login
 from django.core.urlresolvers import reverse
 from django.contrib.auth.decorators import login_required
+from .forms import LoginForm
 # Create your views here.
 
 def hello(request):
@@ -22,18 +23,16 @@ def login(request):
 		return redirect(reverse('home',kwargs={'id': request.user.id}))
 
 	if request.method == 'GET':
-		return render(request, 'account/auth/login.html')
-
+		context = {'f': LoginForm() }
+		return render(request, 'account/auth/login.html',context)
 	else:		
-		username = request.POST.get('username','')
-		password = request.POST.get('password','')
-		user = authenticate(username = username,password = password)
-		if not user:
-			context = {'error': 'Invalid username/paswword'}
-			return render(request, 'account/auth/login.html',context)
+		f = LoginForm(request.POST)
+		if not f.is_valid(): #the constraint mentioned in form class are checked, field and non field errors are checked	
+			return render(request,'account/auth/login.html',{'f':f} )
 		else:
-			auth_login(request,user) #inbuild handling of sessions .
-			return redirect(reverse('home',kwargs={'id': request.user.id}))   
+			user = authenticate(username = f.cleaned_data['username'],password = f.cleaned_data['password'])
+			auth_login(request,user)
+			return redirect(reverse('home',kwargs={'id': user.id}))   
 
 @require_GET
 @login_required

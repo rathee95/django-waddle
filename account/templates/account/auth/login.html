@@ -2,11 +2,9 @@
 {% block title %} Login {% endblock %}
 {% block content %}
 {{ error }} 
- 	
 <form action = "{%url 'login' %}" method="POST">
 	{% csrf_token %}
-	<input type="text" name="username"></input>
-	<input type="password" name="password"> </input>
+	{{ f.as_p }}
 	<input type="submit" name="submit" value="Login"></input>
 </form>
 {% endblock %}
