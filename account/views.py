@@ -6,7 +6,7 @@ from django.views.decorators.http import require_GET,require_POST, require_http_
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth import authenticate , logout as auth_logout, login as auth_login
 from django.core.urlresolvers import reverse
-
+from django.contrib.auth.decorators import login_required
 # Create your views here.
 
 def hello(request):
@@ -16,32 +16,30 @@ def hello(request):
 	# print(request.user)
 	return HttpResponse('<h1>hello</h1>')
 
-@require_GET
-def show_login(request):
-	if request.user.is_authenticated():
-		return redirect('/account/home')
-	return render(request, 'account/auth/login.html')
-
-@require_POST
+@require_http_methods(['GET','POST'])
 def login(request):
 	if request.user.is_authenticated():
 		return redirect(reverse('home',kwargs={'id': request.user.id}))
 
-	username = request.POST.get('username','')
-	password = request.POST.get('password','')
-	user = authenticate(username = username,password = password)
-	if not user:
-		context = {'error': 'Invalid username/paswword'}
-		return render(request, 'account/auth/login.html',context)
-	else:
-		auth_login(request,user) #inbuild handling of sessions .
-		return redirect(reverse('home',kwargs={'id': request.user.id}))   
+	if request.method == 'GET':
+		return render(request, 'account/auth/login.html')
 
+	else:		
+		username = request.POST.get('username','')
+		password = request.POST.get('password','')
+		user = authenticate(username = username,password = password)
+		if not user:
+			context = {'error': 'Invalid username/paswword'}
+			return render(request, 'account/auth/login.html',context)
+		else:
+			auth_login(request,user) #inbuild handling of sessions .
+			return redirect(reverse('home',kwargs={'id': request.user.id}))   
+
+@require_GET
+@login_required
 def home(request,id):
-	if not request.user.is_authenticated():
-		return redirect(reverse('base'))
 	return render(request,'account/auth/loggedin.html')
 
 def logout(request):
 	auth_logout(request)
-	return redirect(reverse('base'))
+	return redirect(reverse('login'))

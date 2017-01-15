@@ -121,9 +121,11 @@ USE_L10N = True
 USE_TZ = True
 
 
+
+LOGIN_URL = "login" # what to open incase login_required is ON on a view and we are not logged in 
+
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.10/howto/static-files/
-
 STATIC_URL = '/static/'
 
 AUTH_USER_MODEL = 'account.MyUser'
