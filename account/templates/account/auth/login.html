@@ -2,8 +2,8 @@
 {% block title %} Login {% endblock %}
 {% block content %}
 {{ error }} 
-
-<form action = "/account/login/" method="POST">
+ 	
+<form action = "{%url 'login' %}" method="POST">
 	{% csrf_token %}
 	<input type="text" name="username"></input>
 	<input type="password" name="password"> </input>

@@ -4,7 +4,7 @@ from django.shortcuts import render, get_object_or_404 , redirect
 from django.http import Http404 , JsonResponse, HttpResponse
 from django.views.decorators.http import require_GET,require_POST, require_http_methods	
 from django.views.decorators.csrf import csrf_exempt
-from django.contrib.auth import authenticate , login as auth_login
+from django.contrib.auth import authenticate , logout as auth_logout, login as auth_login
 from django.core.urlresolvers import reverse
 
 # Create your views here.
@@ -41,3 +41,7 @@ def home(request,id):
 	if not request.user.is_authenticated():
 		return redirect(reverse('base'))
 	return render(request,'account/auth/loggedin.html')
+
+def logout(request):
+	auth_logout(request)
+	return redirect(reverse('base'))
