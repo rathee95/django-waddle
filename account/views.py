@@ -8,6 +8,7 @@ from django.contrib.auth import authenticate , logout as auth_logout, login as a
 from django.core.urlresolvers import reverse
 from django.contrib.auth.decorators import login_required
 from .forms import LoginForm
+from .models import MyUser
 # Create your views here.
 
 def hello(request):
@@ -30,7 +31,7 @@ def login(request):
 		if not f.is_valid(): #the constraint mentioned in form class are checked, field and non field errors are checked	
 			return render(request,'account/auth/login.html',{'f':f} )
 		else:
-			user = authenticate(username = f.cleaned_data['username'],password = f.cleaned_data['password'])
+			user = f.authenticated_user
 			auth_login(request,user)
 			return redirect(reverse('home',kwargs={'id': user.id}))   
 
