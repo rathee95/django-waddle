@@ -30,3 +30,11 @@ class LoginForm(forms.Form):
 		return self.cleaned_data
 
 
+class ForgetPassword(forms.Form):
+	username = forms.CharField(max_length = 100)
+
+	def clean_username(self):
+		data_username =self.cleaned_data.get('username','')
+		if data_username and not	MyUser.objects.filter(username = data_username).exists():
+			raise forms.ValidationError('Invalid username') 
+		return data_username  

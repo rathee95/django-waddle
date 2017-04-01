@@ -7,8 +7,8 @@ from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth import authenticate , logout as auth_logout, login as auth_login
 from django.core.urlresolvers import reverse
 from django.contrib.auth.decorators import login_required
-from .forms import LoginForm
-from .models import MyUser
+from .forms import LoginForm, ForgetPassword
+from .models import MyUser, create_otp, get_valid_otp_object
 # Create your views here.
 
 def hello(request):
@@ -34,6 +34,47 @@ def login(request):
 			user = f.authenticated_user
 			auth_login(request,user)
 			return redirect(reverse('home',kwargs={'id': user.id}))   
+
+
+def forget_password(request):
+	if request.user.is_authenticated():
+		return redirect(reverse('home',kwargs={'id': request.user.id}))
+
+	if request.method == 'GET':
+		context = {'f': ForgetPassword() }
+		return render(request, 'account/auth/forgot_password.html',context)
+	else:		
+		f = ForgetPassword(request.POST)
+		if not f.is_valid(): #the constraint mentioned in form class are checked, field and non field errors are checked	
+			return render(request,'account/auth/forgot_password.html',{'f':f} )
+		else:
+			user = MyUser.objects.get(username = f.cleaned_data['username']) 
+			otp = create_otp(user = user ,purpose = 'FP')
+			#SEND EMAIL <<<<<<<<<<<<< -------------------->>>>
+			return render(request,'account/auth/forgot_email_sent.html',{'u':user}) 	
+
+
+def reset_password(request, id = None, otp = None):
+	if request.user.is_authenticated():
+		return redirect(reverse('home',kwargs={'id': request.user.id}))
+	
+	user = get_object_or_404(MyUser,id= id)
+	otp_object = get_valid_otp_object(user= user, purpose = 'FP',otp = otp )
+	if not otp_object:
+		raise Http404()
+
+	
+	# if request.method == 'GET':
+	# 	context = {'f': LoginForm() }
+	# 	return render(request, 'account/auth/login.html',context)
+	# else:		
+	# 	f = LoginForm(request.POST)
+	# 	if not f.is_valid(): #the constraint mentioned in form class are checked, field and non field errors are checked	
+	# 		return render(request,'account/auth/login.html',{'f':f} )
+	# 	else:
+	# 		user = f.authenticated_user
+	# 		auth_login(request,user)
+
 
 @require_GET
 @login_required
