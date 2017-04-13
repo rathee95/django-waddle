@@ -1,4 +1,4 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404,redirect
  #renderig all file handling work 
 from .models import Question
 # Create your views here.
@@ -6,6 +6,10 @@ from django.http import Http404 , JsonResponse, HttpResponse
 from django.views.decorators.http import require_GET,require_POST, require_http_methods	
 from django.core import serializers	
 from django.views.decorators.csrf import csrf_exempt
+from .forms import QuestionCreateForm
+from django.core.urlresolvers import reverse
+from django.contrib.auth.decorators import login_required
+from account.urls import home
 
 @csrf_exempt
 def all_questions(request):
@@ -14,7 +18,22 @@ def all_questions(request):
 
 @require_GET
 def show_question_add_form(request):
- 	return render(request,'question/create_form.html')
+	context = {'f': QuestionCreateForm() }
+	return render(request,'question/create_form.html',context)
+
+@require_http_methods(['GET', 'POST'])
+@login_required
+def add_question(request):
+    if request.method == 'GET':
+        f = QuestionCreateForm()
+    else:
+        f = QuestionCreateForm(request.POST)
+        if f.is_valid():
+            question_obj = f.save(commit = False)
+            question_obj.created_by = request.user
+            question_obj.save()
+            return redirect(reverse('home',kwargs={'id': request.user.id}))
+    return render(request, 'question/create_form.html', {'f': f})
 
 @require_POST
 def save_question(request):

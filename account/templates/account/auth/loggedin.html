@@ -2,5 +2,9 @@
 {% block title %} Welcome {% endblock %}
 {% block content %}
 <h1> Welcome, {{user.username}} </h1>
+<!--DOUBT-->
+<a href  = '/question/add/'> Add Question</a> 
 <a href  = {%url 'logout' %}> logout</a>
+
+
 {% endblock %}
