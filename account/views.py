@@ -84,3 +84,8 @@ def home(request,id):
 def logout(request):
 	auth_logout(request)
 	return redirect(reverse('login'))
+
+def all_users(request):
+	list_user = MyUser.objects.all();
+	print (list_user)
+	return render(request,'account/auth/all_users.html',{'u':list_user})

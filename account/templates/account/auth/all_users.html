@@ -1,0 +1,15 @@
+{% extends 'common/base.html' %}
+{% block title %} All users {% endblock %}
+{% block content %}
+{{ error }} 
+hey, we have got all the users 
+
+
+{% for user in u %}
+<h2>
+     Hi {{ user.username }}
+</h2>
+
+{% endfor %}
+
+{% endblock %}
