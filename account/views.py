@@ -10,6 +10,9 @@ from django.contrib.auth.decorators import login_required
 from .forms import LoginForm, ForgetPassword
 from .models import MyUser, create_otp, get_valid_otp_object
 # Create your views here.
+import inspect
+from datetime import datetime, timedelta
+from django.utils import timezone
 
 def hello(request):
 	#print(request.GET['abc'])#never directly use [] with request
@@ -86,6 +89,12 @@ def logout(request):
 	return redirect(reverse('login'))
 
 def all_users(request):
+	print (inspect.stack()[0][3])
 	list_user = MyUser.objects.all();
+
 	print (list_user)
-	return render(request,'account/auth/all_users.html',{'u':list_user})
+	how_many_days = 30
+	list_user2 = MyUser.objects.values('username','id').order_by('date_joined').reverse()[:1]
+	print (list_user2)
+	a = 'account/auth/'+ inspect.stack()[0][3]+'.html'
+	return render(request,a,{'u':list_user})
