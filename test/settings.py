@@ -77,9 +77,15 @@ WSGI_APPLICATION = 'test.wsgi.application'
 # https://docs.djangoproject.com/en/1.10/ref/settings/#databases
 
 DATABASES = {
-    'default': dj_database_url.config(
-        default=config('DATABASE_URL')
-    )
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'test',
+        'HOST': 'localhost',
+        'USER': 'root',
+        'PASSWORD': 'mugglemysql',
+        'PORT': 3306,
+
+    }
 }
 
 
@@ -125,4 +131,4 @@ STATIC_URL = '/static/'
 
 AUTH_USER_MODEL = 'account.MyUser'
 
-STATICFILES_STORAGE = 'whitenoise.django.GzipManifestStaticFilesStorage'
+# STATICFILES_STORAGE = 'whitenoise.django.GzipManifestStaticFilesStorage'
