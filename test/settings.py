@@ -77,15 +77,9 @@ WSGI_APPLICATION = 'test.wsgi.application'
 # https://docs.djangoproject.com/en/1.10/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'test',
-        'HOST': 'localhost',
-        'USER': 'root',
-        'PASSWORD': 'mugglemysql',
-        'PORT': 3306,
-
-    }
+    'default': dj_database_url.config(
+        default=config('DATABASE_URL')
+    )
 }
 
 
