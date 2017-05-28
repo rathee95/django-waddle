@@ -130,3 +130,5 @@ LOGIN_URL = "login" # what to open incase login_required is ON on a view and we 
 STATIC_URL = '/static/'
 
 AUTH_USER_MODEL = 'account.MyUser'
+
+STATICFILES_STORAGE = 'whitenoise.django.GzipManifestStaticFilesStorage'
